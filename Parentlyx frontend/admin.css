@@ -1,0 +1,282 @@
+/* ============================= */
+/* GLOBAL RESET */
+/* ============================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+}
+
+/* ============================= */
+/* HIDDEN CLASS */
+/* ============================= */
+
+.hidden {
+    display: none;
+}
+
+/* ============================= */
+/* HEADER */
+/* ============================= */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #0b3d91, #1456c3);
+    color: white;
+    padding: 15px 30px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.header h1 {
+    font-size: 20px;
+}
+
+.header button {
+    padding: 8px 15px;
+    background-color: #ff4c4c;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.header button:hover {
+    background-color: #d60000;
+}
+
+/* ============================= */
+/* LAYOUT */
+/* ============================= */
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ============================= */
+/* SIDEBAR */
+/* ============================= */
+
+.sidebar {
+    width: 230px;
+    background-color: #111827;
+    padding-top: 20px;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar ul li {
+    padding: 15px 20px;
+    color: #d1d5db;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.sidebar ul li:hover {
+    background-color: #1f2937;
+    color: white;
+    padding-left: 25px;
+}
+
+/* ============================= */
+/* CONTENT */
+/* ============================= */
+
+.content {
+    flex: 1;
+    padding: 30px;
+}
+
+/* ============================= */
+/* SECTION CONTROL */
+/* ============================= */
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+/* ============================= */
+/* DASHBOARD CARDS */
+/* ============================= */
+
+.cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.card {
+    background-color: white;
+    padding: 25px;
+    flex: 1;
+    min-width: 200px;
+    text-align: center;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: 0.3s ease;
+}
+
+.card span {
+    display: block;
+    margin-top: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #0b3d91;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.clickable:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+}
+
+/* ============================= */
+/* FORMS */
+/* ============================= */
+
+form input,
+form select,
+form textarea {
+    display: block;
+    margin: 12px 0;
+    padding: 10px;
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    transition: 0.2s;
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+    border-color: #0b3d91;
+    outline: none;
+    box-shadow: 0 0 5px rgba(11, 61, 145, 0.3);
+}
+
+form button {
+    padding: 10px;
+    background-color: #0b3d91;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+form button:hover {
+    background-color: #062a63;
+}
+
+/* ============================= */
+/* LIST SECTION */
+/* ============================= */
+
+.list-container {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.entry {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.entry:last-child {
+    border-bottom: none;
+}
+
+.entry button {
+    padding: 6px 12px;
+    background-color: #0b3d91;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.entry button:hover {
+    background-color: #062a63;
+}
+
+/* ============================= */
+/* LOGIN PAGE */
+/* ============================= */
+
+.login-container {
+    width: 350px;
+    margin: 120px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    text-align: center;
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+    color: #0b3d91;
+}
+
+.login-container input {
+    width: 100%;
+}
+
+.login-container button {
+    padding: 10px;
+    background-color: #0b3d91;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.login-container button:hover {
+    background-color: #062a63;
+}
+
+/* ============================= */
+/* RESPONSIVE */
+/* ============================= */
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+
+    .cards {
+        flex-direction: column;
+    }
+}
