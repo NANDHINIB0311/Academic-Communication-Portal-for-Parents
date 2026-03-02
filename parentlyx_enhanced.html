@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parentlyx - School Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #4F46E5;
+  --primary-light: #818CF8;
+  --primary-dark: #3730A3;
+  --secondary: #06B6D4;
+  --accent: #F59E0B;
+  --success: #10B981;
+  --danger: #EF4444;
+  --warning: #F59E0B;
+  --bg: #F0F4FF;
+  --card: #FFFFFF;
+  --text: #1E1B4B;
+  --text-light: #6B7280;
+  --border: #E0E7FF;
+  --sidebar: #1E1B4B;
+  --sidebar-text: #C7D2FE;
+  --sidebar-active: #4F46E5;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Poppins',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+.page { display:none; min-height:100vh; }
+.page.active { display:flex; flex-direction:column; }
+
+/* HOME */
+#home-page {
+  background: linear-gradient(135deg, #1E1B4B 0%, #4F46E5 50%, #06B6D4 100%);
+  align-items:center; justify-content:center; position:relative; overflow:hidden;
+}
+#home-page::before {
+  content:''; position:absolute; width:600px; height:600px;
+  background: rgba(255,255,255,0.05); border-radius:50%;
+  top:-100px; right:-100px;
+}
+#home-page::after {
+  content:''; position:absolute; width:400px; height:400px;
+  background: rgba(255,255,255,0.03); border-radius:50%;
+  bottom:-50px; left:-50px;
+}
+.home-content { text-align:center; z-index:1; animation: fadeInUp 0.8s ease; }
+.home-logo { font-family:'Nunito',sans-serif; font-size:72px; font-weight:900; color:#fff; letter-spacing:-2px; }
+.home-logo span { color:#F59E0B; }
+.home-tagline { color:rgba(255,255,255,0.7); font-size:18px; margin:12px 0 40px; }
+.home-btns { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+.btn-home { padding:14px 32px; border-radius:50px; font-family:'Poppins',sans-serif; font-size:15px; font-weight:600; cursor:pointer; transition:all 0.3s; border:2px solid transparent; }
+.btn-home.admin { background:#F59E0B; color:#1E1B4B; }
+.btn-home.admin:hover { background:#D97706; transform:translateY(-2px); box-shadow:0 8px 24px rgba(245,158,11,0.4); }
+.btn-home.teacher { background:transparent; color:#fff; border-color:rgba(255,255,255,0.5); }
+.btn-home.teacher:hover { background:rgba(255,255,255,0.1); transform:translateY(-2px); }
+.btn-home.parent { background:#06B6D4; color:#fff; }
+.btn-home.parent:hover { background:#0891B2; transform:translateY(-2px); box-shadow:0 8px 24px rgba(6,182,212,0.4); }
+.home-badges { display:flex; gap:20px; justify-content:center; margin-top:50px; flex-wrap:wrap; }
+.badge { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:12px; padding:16px 24px; color:#fff; text-align:center; backdrop-filter:blur(10px); }
+.badge-num { font-size:32px; font-weight:800; font-family:'Nunito',sans-serif; }
+.badge-label { font-size:12px; opacity:0.7; }
+
+/* LOGIN */
+#login-page {
+  background: linear-gradient(135deg, #1E1B4B 0%, #312E81 100%);
+  align-items:center; justify-content:center;
+}
+.login-box {
+  background:#fff; border-radius:24px; padding:48px;
+  width:100%; max-width:420px; box-shadow:0 25px 60px rgba(0,0,0,0.3);
+  animation:fadeInUp 0.5s ease;
+}
+.login-logo { font-family:'Nunito',sans-serif; font-size:32px; font-weight:900; color:var(--primary); text-align:center; margin-bottom:4px; }
+.login-logo span { color:#F59E0B; }
+.login-role { text-align:center; color:var(--text-light); font-size:13px; margin-bottom:32px; }
+.login-role strong { color:var(--primary); text-transform:capitalize; }
+.form-group { margin-bottom:20px; }
+.form-group label { display:block; font-size:13px; font-weight:600; color:var(--text); margin-bottom:8px; }
+.form-group input {
+  width:100%; padding:12px 16px; border:2px solid var(--border); border-radius:12px;
+  font-family:'Poppins',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s;
+}
+.form-group input:focus { border-color:var(--primary); }
+.btn-login {
+  width:100%; padding:14px; background:var(--primary); color:#fff;
+  border:none; border-radius:12px; font-family:'Poppins',sans-serif;
+  font-size:15px; font-weight:600; cursor:pointer; transition:all 0.3s;
+}
+.btn-login:hover { background:var(--primary-dark); transform:translateY(-1px); box-shadow:0 8px 24px rgba(79,70,229,0.4); }
+.login-back { text-align:center; margin-top:20px; }
+.login-back a { color:var(--primary); text-decoration:none; font-size:13px; cursor:pointer; }
+
+/* DASHBOARD */
+#admin-page, #teacher-page, #parent-page { flex-direction:row; }
+
+.sidebar {
+  width:260px; min-height:100vh; background:var(--sidebar);
+  display:flex; flex-direction:column; padding:0; flex-shrink:0;
+  position:sticky; top:0; height:100vh; overflow-y:auto;
+}
+.sidebar-logo { padding:28px 24px; font-family:'Nunito',sans-serif; font-size:26px; font-weight:900; color:#fff; border-bottom:1px solid rgba(255,255,255,0.1); }
+.sidebar-logo span { color:#F59E0B; }
+.sidebar-nav { flex:1; padding:16px 0; }
+.nav-section { padding:8px 24px 4px; font-size:10px; font-weight:700; color:rgba(255,255,255,0.3); letter-spacing:1.5px; text-transform:uppercase; }
+.nav-item {
+  display:flex; align-items:center; gap:12px; padding:12px 24px;
+  color:var(--sidebar-text); cursor:pointer; transition:all 0.2s;
+  font-size:14px; border-left:3px solid transparent;
+}
+.nav-item:hover { background:rgba(255,255,255,0.05); color:#fff; }
+.nav-item.active { background:rgba(79,70,229,0.3); color:#fff; border-left-color:#F59E0B; }
+.nav-item .icon { font-size:18px; width:22px; }
+.nav-badge { background:#EF4444; color:#fff; font-size:10px; font-weight:700; border-radius:10px; padding:2px 6px; margin-left:auto; }
+.sidebar-bottom { padding:20px 24px; border-top:1px solid rgba(255,255,255,0.1); }
+.btn-logout {
+  width:100%; padding:10px; background:rgba(239,68,68,0.2); color:#FCA5A5;
+  border:1px solid rgba(239,68,68,0.3); border-radius:10px;
+  cursor:pointer; font-family:'Poppins',sans-serif; font-size:13px; font-weight:600; transition:all 0.2s;
+}
+.btn-logout:hover { background:rgba(239,68,68,0.4); }
+
+.main-content { flex:1; padding:32px; overflow-y:auto; min-height:100vh; }
+
+/* TOPBAR */
+.topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:32px; }
+.topbar h1 { font-family:'Nunito',sans-serif; font-size:28px; font-weight:800; }
+.topbar-right { display:flex; align-items:center; gap:12px; }
+.lang-toggle { display:flex; background:#fff; border-radius:20px; padding:4px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+.lang-btn { padding:4px 14px; border-radius:16px; border:none; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s; background:transparent; color:var(--text-light); }
+.lang-btn.active { background:var(--primary); color:#fff; }
+.user-badge { background:var(--primary); color:#fff; width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; }
+
+/* CARDS */
+.stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; margin-bottom:32px; }
+.stat-card {
+  background:#fff; border-radius:20px; padding:24px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.06); position:relative; overflow:hidden;
+}
+.stat-card::before { content:''; position:absolute; right:-20px; top:-20px; width:80px; height:80px; border-radius:50%; opacity:0.1; }
+.stat-card.blue::before { background:#4F46E5; }
+.stat-card.cyan::before { background:#06B6D4; }
+.stat-card.amber::before { background:#F59E0B; }
+.stat-card.green::before { background:#10B981; }
+.stat-icon { font-size:28px; margin-bottom:12px; }
+.stat-num { font-family:'Nunito',sans-serif; font-size:36px; font-weight:900; }
+.stat-label { font-size:13px; color:var(--text-light); }
+.stat-card.blue .stat-num { color:#4F46E5; }
+.stat-card.cyan .stat-num { color:#06B6D4; }
+.stat-card.amber .stat-num { color:#F59E0B; }
+.stat-card.green .stat-num { color:#10B981; }
+
+/* TABLE */
+.section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.section-title { font-family:'Nunito',sans-serif; font-size:20px; font-weight:800; }
+.btn-add {
+  padding:10px 20px; background:var(--primary); color:#fff; border:none;
+  border-radius:10px; cursor:pointer; font-family:'Poppins',sans-serif;
+  font-size:13px; font-weight:600; transition:all 0.2s;
+}
+.btn-add:hover { background:var(--primary-dark); }
+.card { background:#fff; border-radius:20px; box-shadow:0 2px 12px rgba(0,0,0,0.06); overflow:hidden; margin-bottom:24px; }
+.card-header { padding:20px 24px; border-bottom:1px solid var(--border); font-family:'Nunito',sans-serif; font-size:16px; font-weight:800; }
+table { width:100%; border-collapse:collapse; }
+th { padding:12px 20px; text-align:left; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-light); background:#F8FAFF; }
+td { padding:14px 20px; font-size:13px; border-top:1px solid #F1F5F9; }
+tr:hover td { background:#F8FAFF; }
+.btn-view, .btn-update {
+  padding:6px 14px; border-radius:8px; border:none; cursor:pointer;
+  font-family:'Poppins',sans-serif; font-size:12px; font-weight:600; transition:all 0.2s;
+}
+.btn-view { background:#EEF2FF; color:var(--primary); }
+.btn-view:hover { background:var(--primary); color:#fff; }
+.btn-update { background:#ECFDF5; color:#10B981; }
+.btn-update:hover { background:#10B981; color:#fff; }
+
+.badge-status { padding:4px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+.badge-present { background:#ECFDF5; color:#10B981; }
+.badge-warn { background:#FEF3C7; color:#D97706; }
+.badge-good { background:#EEF2FF; color:#4F46E5; }
+
+/* MODAL */
+.modal-overlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5);
+  z-index:1000; align-items:center; justify-content:center; padding:20px;
+}
+.modal-overlay.active { display:flex; }
+.modal {
+  background:#fff; border-radius:24px; padding:32px; width:100%;
+  max-width:520px; max-height:85vh; overflow-y:auto;
+  animation:fadeInUp 0.3s ease; position:relative;
+}
+.modal h2 { font-family:'Nunito',sans-serif; font-size:22px; font-weight:800; margin-bottom:24px; }
+.modal-close {
+  position:absolute; top:20px; right:20px; width:32px; height:32px;
+  background:#F1F5F9; border:none; border-radius:50%; cursor:pointer;
+  font-size:18px; display:flex; align-items:center; justify-content:center;
+}
+.detail-row { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #F1F5F9; font-size:14px; }
+.detail-label { color:var(--text-light); font-weight:500; }
+.detail-value { font-weight:600; color:var(--text); }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.form-grid .full { grid-column:1/-1; }
+.form-group select { width:100%; padding:12px 16px; border:2px solid var(--border); border-radius:12px; font-family:'Poppins',sans-serif; font-size:14px; outline:none; }
+.btn-save { padding:12px 28px; background:var(--primary); color:#fff; border:none; border-radius:12px; font-family:'Poppins',sans-serif; font-size:14px; font-weight:600; cursor:pointer; }
+
+/* PROGRESS */
+.progress-bar { height:8px; background:#E0E7FF; border-radius:4px; overflow:hidden; }
+.progress-fill { height:100%; border-radius:4px; transition:width 0.5s; }
+
+/* PARENT PORTAL */
+.student-hero { background:linear-gradient(135deg,#4F46E5,#06B6D4); border-radius:20px; padding:28px; color:#fff; margin-bottom:24px; display:flex; align-items:center; gap:24px; }
+.student-avatar { width:72px; height:72px; background:rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:800; }
+.student-info h2 { font-family:'Nunito',sans-serif; font-size:24px; font-weight:900; }
+.student-info p { opacity:0.8; font-size:14px; }
+.progress-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:24px; }
+.progress-card { background:#fff; border-radius:16px; padding:20px; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
+.status-green { color:#10B981; font-weight:700; font-size:13px; }
+.status-yellow { color:#F59E0B; font-weight:700; font-size:13px; }
+.status-red { color:#EF4444; font-weight:700; font-size:13px; }
+.notification-item { display:flex; align-items:flex-start; gap:12px; padding:14px; background:#F8FAFF; border-radius:12px; margin-bottom:10px; border-left:3px solid var(--primary); }
+.notif-icon { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.notif-blue { background:#EEF2FF; }
+.notif-amber { background:#FEF3C7; }
+.notif-new { border-left-color:#10B981; background:#F0FDF4; }
+.notif-new-badge { background:#10B981; color:#fff; font-size:9px; font-weight:700; padding:2px 6px; border-radius:6px; margin-left:8px; }
+.feedback-form { background:#fff; border-radius:20px; padding:24px; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
+.leave-form { background:#fff; border-radius:20px; padding:24px; box-shadow:0 2px 12px rgba(0,0,0,0.06); margin-top:20px; }
+
+/* TEACHER PORTAL */
+.update-row { background:#ECFDF5 !important; }
+.feedback-inbox-item { background:#F8FAFF; border-radius:14px; padding:16px; margin-bottom:12px; border-left:4px solid var(--primary); }
+.leave-inbox-item { background:#FEF3C7; border-radius:14px; padding:16px; margin-bottom:12px; border-left:4px solid var(--warning); }
+
+/* ANIMATIONS */
+@keyframes fadeInUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+/* RESPONSIVE */
+@media(max-width:768px) {
+  .sidebar { width:60px; }
+  .sidebar-logo, .nav-section, .nav-item span, .sidebar-bottom .btn-logout span { display:none; }
+  .nav-item { justify-content:center; }
+  .main-content { padding:16px; }
+  .form-grid { grid-template-columns:1fr; }
+}
+
+.sub-page { display:none; }
+.sub-page.active { display:block; }
+
+.input-edit {
+  padding:6px 10px; border:1.5px solid var(--border); border-radius:8px;
+  font-family:'Poppins',sans-serif; font-size:12px; width:80px; outline:none;
+}
+.input-edit:focus { border-color:var(--primary); }
+.select-edit {
+  padding:6px 8px; border:1.5px solid var(--border); border-radius:8px;
+  font-family:'Poppins',sans-serif; font-size:12px; outline:none;
+}
+
+.skill-tag { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; margin:2px; background:#EEF2FF; color:var(--primary); }
+
+.behavior-good { color:#10B981; font-weight:600; }
+.behavior-ok { color:#F59E0B; font-weight:600; }
+.behavior-bad { color:#EF4444; font-weight:600; }
+
+.toast {
+  position:fixed; bottom:30px; right:30px; background:var(--primary); color:#fff;
+  padding:14px 24px; border-radius:14px; box-shadow:0 8px 24px rgba(79,70,229,0.4);
+  font-size:14px; font-weight:600; z-index:9999; animation:fadeInUp 0.3s ease;
+  display:none;
+}
+
+.section-hidden { display:none !important; }
+
+/* Tamil font support */
+.lang-tamil { font-family: 'Poppins', 'Noto Sans Tamil', sans-serif; }
+</style>
+</head>
+<body>
+
+<!-- HOME PAGE -->
+<div id="home-page" class="page active">
+  <div class="home-content">
+    <div class="home-logo">Parent<span>lyx</span></div>
+    <div class="home-tagline">Academic Communication Portal for Parents</div>
+    <p style="color:rgba(255,255,255,0.5);font-size:15px;margin-bottom:32px;">Welcome to Parentlyx — Connect · Track · Grow</p>
+    <div class="home-btns">
+      <button class="btn-home admin" onclick="goLogin('admin')">🛡️ Admin Portal</button>
+      <button class="btn-home teacher" onclick="goLogin('teacher')">👨‍🏫 Teacher Portal</button>
+      <button class="btn-home parent" onclick="goLogin('parent')">👪 Parent Portal</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN PAGE -->
+<div id="login-page" class="page">
+  <div class="login-box">
+    <div class="login-logo">Parent<span>lyx</span></div>
+    <div class="login-role">Sign in as <strong id="login-role-label">Admin</strong></div>
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" id="login-user" placeholder="Enter username">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="login-pass" placeholder="Enter password">
+    </div>
+    <button class="btn-login" onclick="doLogin()">Sign In →</button>
+    <div class="login-back"><a onclick="showPage('home-page')">← Back to Home</a></div>
+  </div>
+</div>
+
+<!-- ADMIN PORTAL -->
+<div id="admin-page" class="page">
+  <div class="sidebar">
+    <div class="sidebar-logo">Parent<span>lyx</span></div>
+    <div class="sidebar-nav">
+      <div class="nav-section">Main</div>
+      <div class="nav-item active" onclick="adminNav('dashboard',this)"><span class="icon">🏠</span><span>Dashboard</span></div>
+      <div class="nav-section">Management</div>
+      <div class="nav-item" onclick="adminNav('students',this)"><span class="icon">🎓</span><span>Students</span></div>
+      <div class="nav-item" onclick="adminNav('teachers',this)"><span class="icon">👨‍🏫</span><span>Teachers</span></div>
+      <div class="nav-item" onclick="adminNav('parents',this)"><span class="icon">👪</span><span>Parents</span></div>
+      <div class="nav-section">Add New</div>
+      <div class="nav-item" onclick="adminNav('add-student',this)"><span class="icon">➕</span><span>Add Student</span></div>
+      <div class="nav-item" onclick="adminNav('add-teacher',this)"><span class="icon">➕</span><span>Add Teacher</span></div>
+      <div class="nav-item" onclick="adminNav('add-parent',this)"><span class="icon">➕</span><span>Add Parent</span></div>
+      <div class="nav-section">Comms</div>
+      <div class="nav-item" onclick="adminNav('announcement',this)"><span class="icon">📢</span><span>Announcement</span></div>
+    </div>
+    <div class="sidebar-bottom">
+      <button class="btn-logout" onclick="logout()">🚪 <span>Logout</span></button>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="topbar">
+      <h1 id="admin-title">Dashboard</h1>
+      <div class="topbar-right">
+        <span style="font-size:13px;color:var(--text-light);">Welcome, <strong>Admin</strong></span>
+        <div class="user-badge">A</div>
+      </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="admin-dashboard" class="sub-page active">
+      <div class="stats-grid">
+        <div class="stat-card blue" onclick="toggleDashList('dash-list-students','dash-list-teachers','dash-list-parents')" style="cursor:pointer">
+          <div class="stat-icon">🎓</div>
+          <div class="stat-num" id="count-students">10</div>
+          <div class="stat-label">Total Students</div>
+          <div style="font-size:11px;color:#818CF8;margin-top:6px;">Click to view ▾</div>
+        </div>
+        <div class="stat-card cyan" onclick="toggleDashList('dash-list-teachers','dash-list-students','dash-list-parents')" style="cursor:pointer">
+          <div class="stat-icon">👨‍🏫</div>
+          <div class="stat-num" id="count-teachers">12</div>
+          <div class="stat-label">Total Teachers</div>
+          <div style="font-size:11px;color:#67E8F9;margin-top:6px;">Click to view ▾</div>
+        </div>
+        <div class="stat-card amber" onclick="toggleDashList('dash-list-parents','dash-list-students','dash-list-teachers')" style="cursor:pointer">
+          <div class="stat-icon">👪</div>
+          <div class="stat-num" id="count-parents">10</div>
+          <div class="stat-label">Total Parents</div>
+          <div style="font-size:11px;color:#FCD34D;margin-top:6px;">Click to view ▾</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon">🏫</div>
+          <div class="stat-num">1</div>
+          <div class="stat-label">School Branch</div>
+        </div>
+      </div>
+
+      <div id="dash-list-students" style="display:none;">
+        <div class="card">
+          <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <button onclick="document.getElementById('dash-list-students').style.display='none'" style="background:#EEF2FF;border:none;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;color:#4F46E5;">← Back</button>
+              👨‍🎓 Student List
+            </div>
+          </div>
+          <table><thead><tr><th>#</th><th>Name</th><th>Roll No</th><th>Class</th><th>Action</th></tr></thead>
+          <tbody id="dash-student-body"></tbody></table>
+        </div>
+      </div>
+      <div id="dash-list-teachers" style="display:none;">
+        <div class="card">
+          <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <button onclick="document.getElementById('dash-list-teachers').style.display='none'" style="background:#EEF2FF;border:none;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;color:#4F46E5;">← Back</button>
+              👨‍🏫 Teacher List
+            </div>
+          </div>
+          <table><thead><tr><th>#</th><th>Name</th><th>Subject</th><th>Action</th></tr></thead>
+          <tbody id="dash-teacher-body"></tbody></table>
+        </div>
+      </div>
+      <div id="dash-list-parents" style="display:none;">
+        <div class="card">
+          <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <button onclick="document.getElementById('dash-list-parents').style.display='none'" style="background:#EEF2FF;border:none;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;color:#4F46E5;">← Back</button>
+              👪 Parent List
+            </div>
+          </div>
+          <table><thead><tr><th>#</th><th>Name</th><th>Child</th><th>Action</th></tr></thead>
+          <tbody id="dash-parent-body"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Students -->
+    <div id="admin-students" class="sub-page">
+      <div class="card">
+        <div class="card-header">🎓 All Students</div>
+        <table><thead><tr><th>Roll No</th><th>Name</th><th>Class</th><th>Attendance</th><th>Action</th></tr></thead>
+        <tbody id="admin-student-body"></tbody></table>
+      </div>
+    </div>
+
+    <!-- Teachers -->
+    <div id="admin-teachers" class="sub-page">
+      <div class="card">
+        <div class="card-header">👨‍🏫 All Teachers</div>
+        <table><thead><tr><th>#</th><th>Name</th><th>Subject</th><th>Email</th><th>Action</th></tr></thead>
+        <tbody id="admin-teacher-body"></tbody></table>
+      </div>
+    </div>
+
+    <!-- Parents -->
+    <div id="admin-parents" class="sub-page">
+      <div class="card">
+        <div class="card-header">👪 All Parents</div>
+        <table><thead><tr><th>#</th><th>Name</th><th>Child</th><th>Mobile</th><th>Action</th></tr></thead>
+        <tbody id="admin-parent-body"></tbody></table>
+      </div>
+    </div>
+
+    <!-- Add Student -->
+    <div id="admin-add-student" class="sub-page">
+      <div class="card" style="padding:28px;">
+        <h3 style="margin-bottom:24px;font-family:'Nunito',sans-serif;font-weight:800;">➕ Add New Student</h3>
+        <div class="form-grid">
+          <div class="form-group"><label>Full Name</label><input type="text" id="as-name" placeholder="Student name"></div>
+          <div class="form-group"><label>Roll No</label><input type="text" id="as-roll" placeholder="e.g. R011"></div>
+          <div class="form-group"><label>Class</label><input type="text" id="as-class" placeholder="e.g. 10-A"></div>
+          <div class="form-group"><label>Attendance (%)</label><input type="number" id="as-att" placeholder="85"></div>
+          <div class="form-group"><label>Total Marks</label><input type="number" id="as-marks" placeholder="450"></div>
+          <div class="form-group"><label>Behaviour</label>
+            <select id="as-beh"><option>Excellent</option><option>Good</option><option>Average</option><option>Needs Improvement</option></select>
+          </div>
+          <div class="form-group full"><label>Skills</label><input type="text" id="as-skills" placeholder="e.g. Cricket, Drawing"></div>
+          <div class="form-group"><label>Parent Name</label><input type="text" id="as-parent" placeholder="Father/Mother name"></div>
+          <div class="form-group"><label>Gender</label>
+            <select id="as-gender"><option>Male</option><option>Female</option></select>
+          </div>
+        </div>
+        <button class="btn-save" onclick="addStudent()">💾 Save Student</button>
+      </div>
+    </div>
+
+    <!-- Add Teacher -->
+    <div id="admin-add-teacher" class="sub-page">
+      <div class="card" style="padding:28px;">
+        <h3 style="margin-bottom:24px;font-family:'Nunito',sans-serif;font-weight:800;">➕ Add New Teacher</h3>
+        <div class="form-grid">
+          <div class="form-group"><label>Full Name</label><input type="text" id="at-name" placeholder="Teacher name"></div>
+          <div class="form-group"><label>Subject</label><input type="text" id="at-sub" placeholder="e.g. Mathematics"></div>
+          <div class="form-group"><label>Email</label><input type="email" id="at-email" placeholder="email@school.com"></div>
+          <div class="form-group"><label>Mobile</label><input type="text" id="at-mobile" placeholder="+91 98765 43210"></div>
+        </div>
+        <button class="btn-save" onclick="addTeacher()">💾 Save Teacher</button>
+      </div>
+    </div>
+
+    <!-- Add Parent -->
+    <div id="admin-add-parent" class="sub-page">
+      <div class="card" style="padding:28px;">
+        <h3 style="margin-bottom:24px;font-family:'Nunito',sans-serif;font-weight:800;">➕ Add New Parent</h3>
+        <div class="form-grid">
+          <div class="form-group"><label>Parent Name</label><input type="text" id="ap-name" placeholder="Parent name"></div>
+          <div class="form-group"><label>Mobile</label><input type="text" id="ap-mobile" placeholder="+91 98765 43210"></div>
+          <div class="form-group"><label>Email</label><input type="email" id="ap-email" placeholder="email@gmail.com"></div>
+          <div class="form-group"><label>Language</label>
+            <select id="ap-lang"><option>Tamil</option><option>English</option><option>Telugu</option><option>Hindi</option></select>
+          </div>
+          <div class="form-group"><label>Child Name</label><input type="text" id="ap-child" placeholder="Son/Daughter name"></div>
+          <div class="form-group full"><label>Address</label><input type="text" id="ap-addr" placeholder="Full address"></div>
+        </div>
+        <button class="btn-save" onclick="addParent()">💾 Save Parent</button>
+      </div>
+    </div>
+
+    <!-- Announcement -->
+    <div id="admin-announcement" class="sub-page">
+      <div class="card" style="padding:28px;">
+        <h3 style="margin-bottom:24px;font-family:'Nunito',sans-serif;font-weight:800;">📢 Send Announcement</h3>
+        <div class="form-group"><label>Subject</label><input type="text" id="ann-sub" placeholder="Announcement subject"></div>
+        <div class="form-group"><label>Message</label>
+          <textarea id="ann-msg" rows="5" style="width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:12px;font-family:'Poppins',sans-serif;font-size:14px;resize:vertical;outline:none;" placeholder="Write your announcement here..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Send To</label>
+          <select id="ann-target" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:12px;font-family:'Poppins',sans-serif;font-size:14px;outline:none;">
+            <option value="teachers">All Teachers</option>
+            <option value="parents">All Parents</option>
+            <option value="all">Everyone (Teachers + Parents)</option>
+          </select>
+        </div>
+        <button class="btn-save" onclick="sendAnnouncement()">📨 Send Announcement</button>
+        <div id="ann-sent" style="margin-top:16px;display:none;background:#ECFDF5;border-radius:12px;padding:14px;color:#10B981;font-weight:600;">✅ Announcement sent successfully!</div>
+      </div>
+      <!-- Sent Announcements -->
+      <div class="card" style="padding:24px;">
+        <div class="card-header" style="padding:0 0 16px 0;border:none;">📋 Sent Announcements</div>
+        <div id="admin-ann-list"><div style="text-align:center;color:var(--text-light);padding:20px;">No announcements sent yet.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TEACHER PORTAL -->
+<div id="teacher-page" class="page">
+  <div class="sidebar">
+    <div class="sidebar-logo">Parent<span>lyx</span></div>
+    <div class="sidebar-nav">
+      <div class="nav-item active" onclick="teacherNav('t-students',this)"><span class="icon">📋</span><span>Student List</span></div>
+      <div class="nav-item" onclick="teacherNav('t-add-student',this)"><span class="icon">➕</span><span>Add Student</span></div>
+      <div class="nav-item" onclick="teacherNav('t-updates',this)"><span class="icon">✏️</span><span>Updated Records</span></div>
+      <div class="nav-item" onclick="teacherNav('t-announcements',this)" id="t-ann-nav"><span class="icon">📢</span><span>Announcements</span><span class="nav-badge" id="t-ann-badge" style="display:none;">0</span></div>
+      <div class="nav-item" onclick="teacherNav('t-parent-announce',this)"><span class="icon">📣</span><span>Msg to Parents</span></div>
+      <div class="nav-item" onclick="teacherNav('t-feedback',this)" id="t-fb-nav"><span class="icon">💬</span><span>Parent Feedback</span><span class="nav-badge" id="t-fb-badge" style="display:none;">0</span></div>
+      <div class="nav-item" onclick="teacherNav('t-leaves',this)" id="t-lv-nav"><span class="icon">📝</span><span>Leave Requests</span><span class="nav-badge" id="t-lv-badge" style="display:none;">0</span></div>
+    </div>
+    <div class="sidebar-bottom">
+      <button class="btn-logout" onclick="logout()">🚪 <span>Logout</span></button>
+    </div>
+  </div>
+  <div class="main-content">
+    <div class="topbar">
+      <h1 id="teacher-title">Student List</h1>
+      <div class="topbar-right">
+        <span style="font-size:13px;color:var(--text-light);">Teacher: <strong>Mrs. Priya Rajan</strong></span>
+        <div class="user-badge" style="background:#06B6D4;">T</div>
+      </div>
+    </div>
+
+    <!-- Student List -->
+    <div id="t-students" class="sub-page active">
+      <div class="card">
+        <div class="card-header">📋 Student Records — Click Update to Edit</div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Name</th><th>Class</th><th>Attendance (%)</th><th>Marks</th><th>Behaviour</th><th>Skills</th><th>Action</th></tr></thead>
+            <tbody id="teacher-student-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Student (Teacher) -->
+    <div id="t-add-student" class="sub-page">
+      <div class="card" style="padding:28px;">
+        <h3 style="margin-bottom:24px;font-family:'Nunito',sans-serif;font-weight:800;">➕ Add New Student</h3>
+        <div class="form-grid">
+          <div class="form-group"><label>Full Name</label><input type="text" id="tas-name" placeholder="Student name"></div>
+          <div class="form-group"><label>Roll No</label><input type="text" id="tas-roll" placeholder="e.g. R011"></div>
+          <div class="form-group"><label>Class</label><input type="text" id="tas-class" placeholder="e.g. 10-A"></div>
+          <div class="form-group"><label>Attendance (%)</label><input type="number" id="tas-att" placeholder="85"></div>
+          <div class="form-group"><label>Marks</label><input type="number" id="tas-marks" placeholder="450"></div>
+          <div class="form-group"><label>Behaviour</label>
+            <select id="tas-beh"><option>Excellent</option><option>Good</option><option>Average</option><option>Needs Improvement</option></select>
+          </div>
+          <div class="form-group full"><label>Skills</label><input type="text" id="tas-skills" placeholder="e.g. Cricket, Drawing"></div>
+          <div class="form-group"><label>Parent Name</label><input type="text" id="tas-parent" placeholder="Father/Mother name"></div>
+          <div class="form-group"><label>Gender</label>
+            <select id="tas-gender"><option>Male</option><option>Female</option></select>
+          </div>
+        </div>
+        <button class="btn-save" onclick="teacherAddStudent()">💾 Save Student</button>
+      </div>
+    </div>
+
+    <!-- Updated Records -->
+    <div id="t-updates" class="sub-page">
+      <div class="card">
+        <div class="card-header">✅ Updated Records</div>
+        <table>
+          <thead><tr><th>Name</th><th>Class</th><th>Attendance (%)</th><th>Marks</th><th>Behaviour</th><th>Skills</th><th>Updated</th></tr></thead>
+          <tbody id="updated-body"></tbody>
+        </table>
+        <div id="no-updates" style="padding:24px;text-align:center;color:var(--text-light);">No updates yet. Use the Student List to update records.</div>
+      </div>
+    </div>
+
+    <!-- Admin Announcements (received) -->
+    <div id="t-announcements" class="sub-page">
+      <div class="card" style="padding:24px;">
+        <div class="section-title" style="margin-bottom:20px;">📢 Announcements from Admin</div>
+        <div id="teacher-ann-list"><div style="text-align:center;color:var(--text-light);padding:20px;">No announcements yet.</div></div>
+      </div>
+    </div>
+
+    <!-- Message to Parents -->
+    <div id="t-parent-announce" class="sub-page">
+      <div class="card" style="padding:28px;">
+        <h3 style="margin-bottom:24px;font-family:'Nunito',sans-serif;font-weight:800;">📣 Send Message to Parents</h3>
+        <div class="form-group"><label>Subject</label><input type="text" id="tp-sub" placeholder="Message subject e.g. Exam Schedule, Holiday Notice"></div>
+        <div class="form-group"><label>Message</label>
+          <textarea id="tp-msg" rows="5" style="width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:12px;font-family:'Poppins',sans-serif;font-size:14px;resize:vertical;outline:none;" placeholder="Write your message to parents here..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Target</label>
+          <select id="tp-target" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:12px;font-family:'Poppins',sans-serif;font-size:14px;outline:none;">
+            <option value="all">All Parents</option>
+            <option value="10-A">Class 10-A Parents</option>
+            <option value="10-B">Class 10-B Parents</option>
+            <option value="9-A">Class 9-A Parents</option>
+            <option value="9-B">Class 9-B Parents</option>
+            <option value="8-A">Class 8-A Parents</option>
+          </select>
+        </div>
+        <button class="btn-save" onclick="sendTeacherMsgToParent()">📨 Send to Parents</button>
+        <div id="tp-sent" style="margin-top:16px;display:none;background:#ECFDF5;border-radius:12px;padding:14px;color:#10B981;font-weight:600;">✅ Message sent to parents successfully!</div>
+      </div>
+      <!-- Sent Messages History -->
+      <div class="card" style="padding:24px;">
+        <div class="card-header" style="padding:0 0 16px 0;border:none;">📋 Sent Messages</div>
+        <div id="teacher-sent-msgs"><div style="text-align:center;color:var(--text-light);padding:20px;">No messages sent yet.</div></div>
+      </div>
+    </div>
+
+    <!-- Parent Feedback Inbox -->
+    <div id="t-feedback" class="sub-page">
+      <div class="card" style="padding:24px;">
+        <div class="section-title" style="margin-bottom:20px;">💬 Parent Feedback Inbox</div>
+        <div id="teacher-feedback-list"><div style="text-align:center;color:var(--text-light);padding:20px;">No feedback received yet.</div></div>
+      </div>
+    </div>
+
+    <!-- Leave Requests -->
+    <div id="t-leaves" class="sub-page">
+      <div class="card" style="padding:24px;">
+        <div class="section-title" style="margin-bottom:20px;">📝 Leave Requests from Parents</div>
+        <div id="teacher-leave-list"><div style="text-align:center;color:var(--text-light);padding:20px;">No leave requests yet.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PARENT PORTAL -->
+<div id="parent-page" class="page">
+  <div class="sidebar">
+    <div class="sidebar-logo">Parent<span>lyx</span></div>
+    <div class="sidebar-nav">
+      <div class="nav-item active" onclick="parentNav('p-overview',this)"><span class="icon">🏠</span><span data-key="overview">Overview</span></div>
+      <div class="nav-item" onclick="parentNav('p-notifications',this)"><span class="icon">🔔</span><span data-key="notifications">Notifications</span><span class="nav-badge" id="p-notif-badge" style="display:none;">0</span></div>
+      <div class="nav-item" onclick="parentNav('p-feedback',this)"><span class="icon">💬</span><span data-key="feedback">Feedback</span></div>
+      <div class="nav-item" onclick="parentNav('p-leave',this)"><span class="icon">📝</span><span data-key="applyLeave">Apply Leave</span></div>
+    </div>
+    <div class="sidebar-bottom">
+      <button class="btn-logout" onclick="logout()">🚪 <span>Logout</span></button>
+    </div>
+  </div>
+  <div class="main-content">
+    <div class="topbar">
+      <h1 id="parent-title">My Child's Overview</h1>
+      <div class="topbar-right">
+        <div class="lang-toggle">
+          <button class="lang-btn active" onclick="setLang('EN',this)">EN</button>
+          <button class="lang-btn" onclick="setLang('TA',this)">தமிழ்</button>
+        </div>
+        <div class="user-badge" style="background:#F59E0B;color:#1E1B4B;">P</div>
+      </div>
+    </div>
+
+    <!-- Overview -->
+    <div id="p-overview" class="sub-page active">
+      <div class="student-hero">
+        <div class="student-avatar" id="p-avatar">A</div>
+        <div class="student-info">
+          <h2 id="p-student-name">Arun Kumar</h2>
+          <p id="p-student-details">Class 10-A · Roll No: R001</p>
+          <p id="p-parent-name" style="opacity:0.7;font-size:13px;margin-top:4px;">Parent: Mr. Rajesh Kumar</p>
+        </div>
+      </div>
+      <div class="progress-cards">
+        <div class="progress-card">
+          <div style="font-size:12px;color:var(--text-light);margin-bottom:8px;" data-key="attendance">📊 Attendance</div>
+          <div style="font-size:28px;font-weight:800;color:#4F46E5;" id="p-att">92%</div>
+          <div class="progress-bar" style="margin-top:8px;"><div class="progress-fill" style="background:#4F46E5;width:92%;"></div></div>
+        </div>
+        <div class="progress-card">
+          <div style="font-size:12px;color:var(--text-light);margin-bottom:8px;" data-key="totalMarks">📝 Total Marks</div>
+          <div style="font-size:28px;font-weight:800;color:#10B981;" id="p-marks">468/500</div>
+          <div class="progress-bar" style="margin-top:8px;"><div class="progress-fill" style="background:#10B981;width:93.6%;"></div></div>
+        </div>
+        <div class="progress-card">
+          <div style="font-size:12px;color:var(--text-light);margin-bottom:8px;" data-key="behaviour">😊 Behaviour</div>
+          <div style="font-size:20px;font-weight:700;color:#10B981;" id="p-beh">Excellent</div>
+        </div>
+      </div>
+      <div class="card" style="padding:24px;margin-bottom:24px;">
+        <div class="section-title" style="margin-bottom:16px;">📈 Academic Progress Overview</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">
+          <div style="background:#ECFDF5;border-radius:14px;padding:16px;border-left:4px solid #10B981;">
+            <div style="font-size:11px;font-weight:700;color:#10B981;text-transform:uppercase;letter-spacing:0.5px;">🟢 Improving</div>
+            <div style="font-size:13px;font-weight:600;margin-top:8px;color:#065F46;" data-key="improvingDesc">Performance is good compared to last month</div>
+          </div>
+          <div style="background:#FEF3C7;border-radius:14px;padding:16px;border-left:4px solid #F59E0B;">
+            <div style="font-size:11px;font-weight:700;color:#D97706;text-transform:uppercase;letter-spacing:0.5px;">🟡 Stable</div>
+            <div style="font-size:13px;font-weight:600;margin-top:8px;color:#92400E;" data-key="stableDesc">Stable but needs regular monitoring</div>
+          </div>
+          <div style="background:#FEF2F2;border-radius:14px;padding:16px;border-left:4px solid #EF4444;">
+            <div style="font-size:11px;font-weight:700;color:#EF4444;text-transform:uppercase;letter-spacing:0.5px;">🔴 Needs Attention</div>
+            <div style="font-size:13px;font-weight:600;margin-top:8px;color:#991B1B;" data-key="attentionDesc">Continuous decline detected</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;background:#EEF2FF;border-radius:12px;padding:14px;font-size:13px;">
+          <strong data-key="currentStatus">Current Status: </strong><span class="status-green">🟢 Improving — </span><span data-key="statusMsg">Your child's performance has improved by 8% compared to last month. Keep it up!</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
+        <div class="card" style="padding:20px;">
+          <div style="font-size:15px;font-weight:700;margin-bottom:12px;" data-key="behaviourClass">😊 Behaviour in Class</div>
+          <div class="detail-row"><div class="detail-label" data-key="punctuality">Punctuality</div><div class="behavior-good">Excellent</div></div>
+          <div class="detail-row"><div class="detail-label" data-key="participation">Participation</div><div class="behavior-good">Active</div></div>
+          <div class="detail-row"><div class="detail-label" data-key="homework">Homework</div><div class="behavior-ok">Sometimes Late</div></div>
+          <div class="detail-row"><div class="detail-label" data-key="discipline">Discipline</div><div class="behavior-good">Good</div></div>
+        </div>
+        <div class="card" style="padding:20px;">
+          <div style="font-size:15px;font-weight:700;margin-bottom:12px;" data-key="skillDev">🌟 Skill Development Log</div>
+          <span class="skill-tag">🏏 Cricket</span>
+          <span class="skill-tag">🎨 Drawing</span>
+          <span class="skill-tag">💡 Problem Solving</span>
+          <span class="skill-tag">🗣️ Public Speaking</span>
+          <div style="margin-top:12px;font-size:12px;color:#10B981;font-weight:600;" data-key="skillsAdded">📈 3 new skills added this month</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="p-notifications" class="sub-page">
+      <div class="card" style="padding:24px;">
+        <div class="section-title" style="margin-bottom:20px;" data-key="schoolNotif">🔔 School Notifications</div>
+        <div id="parent-notif-list"></div>
+        <div style="background:#EEF2FF;border-radius:12px;padding:14px;margin-top:16px;font-size:13px;color:var(--text-light);" data-key="pushMsg">
+          📱 <strong>Push notifications</strong> are enabled for your mobile.
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback -->
+    <div id="p-feedback" class="sub-page">
+      <div class="feedback-form">
+        <div class="section-title" style="margin-bottom:8px;" data-key="parentVoice">💬 Parent Voice — Monthly Feedback</div>
+        <p style="color:var(--text-light);font-size:13px;margin-bottom:24px;" data-key="feedbackDesc">Share your concerns or feedback to help us improve</p>
+        <div class="form-group">
+          <label data-key="selectIssue">Select Issue</label>
+          <select id="fb-issue" style="width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:12px;font-family:'Poppins',sans-serif;font-size:14px;outline:none;">
+            <option value="">-- Choose an issue --</option>
+            <option>Homework Load</option>
+            <option>Academic Stress</option>
+            <option>Transport</option>
+            <option>Behaviour</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-key="yourMsg">Your Message</label>
+          <textarea id="fb-msg" rows="4" style="width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:12px;font-family:'Poppins',sans-serif;font-size:14px;resize:vertical;outline:none;" placeholder="Write your feedback here..."></textarea>
+        </div>
+        <button class="btn-save" onclick="submitFeedback()" data-key="submitFeedback">📨 Submit Feedback</button>
+        <div id="fb-success" style="display:none;margin-top:16px;background:#ECFDF5;border-radius:12px;padding:14px;color:#10B981;font-weight:600;" data-key="fbSuccess">✅ Feedback submitted successfully! We'll get back to you soon.</div>
+      </div>
+    </div>
+
+    <!-- Leave -->
+    <div id="p-leave" class="sub-page">
+      <div class="leave-form">
+        <div class="section-title" style="margin-bottom:8px;" data-key="applyLeaveTitle">📝 Apply for Leave</div>
+        <p style="color:var(--text-light);font-size:13px;margin-bottom:24px;" data-key="leaveDesc">Inform the school about your child's absence</p>
+        <div class="form-grid">
+          <div class="form-group"><label data-key="fromDate">From Date</label><input type="date" id="lv-from"></div>
+          <div class="form-group"><label data-key="toDate">To Date</label><input type="date" id="lv-to"></div>
+          <div class="form-group full">
+            <label data-key="reason">Reason</label>
+            <select id="lv-reason" style="width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:12px;font-family:'Poppins',sans-serif;font-size:14px;outline:none;">
+              <option>Medical / Illness</option>
+              <option>Family Function</option>
+              <option>Emergency</option>
+              <option>Travel</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label data-key="additionalNote">Additional Note</label>
+            <textarea id="lv-note" rows="3" style="width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:12px;font-family:'Poppins',sans-serif;font-size:14px;resize:vertical;outline:none;" placeholder="Any additional details..."></textarea>
+          </div>
+        </div>
+        <button class="btn-save" onclick="applyLeave()" data-key="submitLeave">📤 Submit Leave Request</button>
+        <div id="leave-success" style="display:none;margin-top:16px;background:#ECFDF5;border-radius:12px;padding:14px;color:#10B981;font-weight:600;" data-key="leaveSuccess">✅ Leave request submitted successfully! School will confirm soon.</div>
+      </div>
+
+      <!-- Previous Leave Status -->
+      <div class="card" style="padding:24px;margin-top:20px;">
+        <div class="card-header" style="padding:0 0 16px 0;border:none;" data-key="leaveHistory">📋 Leave History</div>
+        <div id="parent-leave-history"><div style="text-align:center;color:var(--text-light);padding:12px;" data-key="noLeave">No leave requests submitted yet.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="student-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('student-modal')">×</button>
+    <h2>🎓 Student Details</h2>
+    <div id="student-modal-content"></div>
+  </div>
+</div>
+<div class="modal-overlay" id="teacher-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('teacher-modal')">×</button>
+    <h2>👨‍🏫 Teacher Details</h2>
+    <div id="teacher-modal-content"></div>
+  </div>
+</div>
+<div class="modal-overlay" id="parent-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('parent-modal')">×</button>
+    <h2>👪 Parent Details</h2>
+    <div id="parent-modal-content"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== DATA ==========
+let students = [
+  {id:1, name:"Arun Kumar",     roll:"R001", cls:"10-A", att:92, marks:468, maxMarks:500, beh:"Excellent",  skills:"Cricket, Drawing",      parent:"Rajesh Kumar",  gender:"M"},
+  {id:2, name:"Kavya Priya",    roll:"R002", cls:"10-A", att:88, marks:442, maxMarks:500, beh:"Good",       skills:"Dance, Reading",        parent:"Meena Devi",    gender:"F"},
+  {id:3, name:"Vikram Singh",   roll:"R003", cls:"10-B", att:79, marks:390, maxMarks:500, beh:"Average",    skills:"Football, Music",       parent:"Ravi Singh",    gender:"M"},
+  {id:4, name:"Nithya Lakshmi", roll:"R004", cls:"10-B", att:96, marks:478, maxMarks:500, beh:"Excellent",  skills:"Painting, Yoga",        parent:"Sudha Lakshmi", gender:"F"},
+  {id:5, name:"Arjun Mehta",    roll:"R005", cls:"9-A",  att:83, marks:415, maxMarks:500, beh:"Good",       skills:"Chess, Coding",         parent:"Suresh Mehta",  gender:"M"},
+  {id:6, name:"Priya Sharma",   roll:"R006", cls:"9-A",  att:91, marks:455, maxMarks:500, beh:"Excellent",  skills:"Singing, Badminton",    parent:"Anitha Sharma", gender:"F"},
+  {id:7, name:"Karthik Raj",    roll:"R007", cls:"9-B",  att:75, marks:370, maxMarks:500, beh:"Average",    skills:"Basketball",            parent:"Murugan Raj",   gender:"M"},
+  {id:8, name:"Divya Menon",    roll:"R008", cls:"9-B",  att:94, marks:472, maxMarks:500, beh:"Excellent",  skills:"Classical Dance, Art",  parent:"Lakshmi Menon", gender:"F"},
+  {id:9, name:"Rohit Nair",     roll:"R009", cls:"8-A",  att:80, marks:398, maxMarks:500, beh:"Good",       skills:"Swimming, Table Tennis",parent:"Sunil Nair",    gender:"M"},
+  {id:10,name:"Sneha Patel",    roll:"R010", cls:"8-A",  att:87, marks:435, maxMarks:500, beh:"Good",       skills:"Cooking, Sketching",    parent:"Hema Patel",    gender:"F"},
+];
+
+let teachers = [
+  {id:1,  name:"Mr. Anand Kumar",     subject:"Mathematics",        email:"anand@parentlyx.edu",   mobile:"+91 98765 11001"},
+  {id:2,  name:"Mrs. Priya Rajan",    subject:"Science",            email:"priya@parentlyx.edu",   mobile:"+91 98765 11002"},
+  {id:3,  name:"Mr. Senthil Vel",     subject:"Social Studies",     email:"senthil@parentlyx.edu", mobile:"+91 98765 11003"},
+  {id:4,  name:"Mrs. Kavitha Devi",   subject:"English",            email:"kavitha@parentlyx.edu", mobile:"+91 98765 11004"},
+  {id:5,  name:"Mr. Ramesh Babu",     subject:"Tamil",              email:"ramesh@parentlyx.edu",  mobile:"+91 98765 11005"},
+  {id:6,  name:"Mrs. Usha Vignesh",   subject:"Computer Science",   email:"usha@parentlyx.edu",    mobile:"+91 98765 11006"},
+  {id:7,  name:"Mr. Dinesh Prabhu",   subject:"Physical Education", email:"dinesh@parentlyx.edu",  mobile:"+91 98765 11007"},
+  {id:8,  name:"Mrs. Malathi Raj",    subject:"Art & Craft",        email:"malathi@parentlyx.edu", mobile:"+91 98765 11008"},
+  {id:9,  name:"Mr. Suresh Mohan",    subject:"Chemistry",          email:"suresh@parentlyx.edu",  mobile:"+91 98765 11009"},
+  {id:10, name:"Mrs. Nirmala Sasi",   subject:"Biology",            email:"nirmala@parentlyx.edu", mobile:"+91 98765 11010"},
+  {id:11, name:"Mr. Vijay Krishnan",  subject:"Physics",            email:"vijay@parentlyx.edu",   mobile:"+91 98765 11011"},
+  {id:12, name:"Mrs. Saranya Mani",   subject:"Music",              email:"saranya@parentlyx.edu", mobile:"+91 98765 11012"},
+];
+
+let parents = [
+  {id:1,  name:"Mr. Rajesh Kumar",   child:"Arun Kumar",     mobile:"+91 90001 10001", lang:"Tamil",   email:"rajesh@gmail.com",   address:"12, Anna Nagar, Chennai - 600040"},
+  {id:2,  name:"Mrs. Meena Devi",    child:"Kavya Priya",    mobile:"+91 90001 10002", lang:"Tamil",   email:"meena@gmail.com",    address:"45, T Nagar, Chennai - 600017"},
+  {id:3,  name:"Mr. Ravi Singh",     child:"Vikram Singh",   mobile:"+91 90001 10003", lang:"Hindi",   email:"ravi@gmail.com",     address:"8, Adyar, Chennai - 600020"},
+  {id:4,  name:"Mrs. Sudha Lakshmi", child:"Nithya Lakshmi", mobile:"+91 90001 10004", lang:"Tamil",   email:"sudha@gmail.com",    address:"77, Velachery, Chennai - 600042"},
+  {id:5,  name:"Mr. Suresh Mehta",   child:"Arjun Mehta",    mobile:"+91 90001 10005", lang:"English", email:"suresh@gmail.com",   address:"3, Mylapore, Chennai - 600004"},
+  {id:6,  name:"Mrs. Anitha Sharma", child:"Priya Sharma",   mobile:"+91 90001 10006", lang:"English", email:"anitha@gmail.com",   address:"55, Kodambakkam, Chennai - 600024"},
+  {id:7,  name:"Mr. Murugan Raj",    child:"Karthik Raj",    mobile:"+91 90001 10007", lang:"Tamil",   email:"murugan@gmail.com",  address:"21, Ambattur, Chennai - 600053"},
+  {id:8,  name:"Mrs. Lakshmi Menon", child:"Divya Menon",    mobile:"+91 90001 10008", lang:"Tamil",   email:"lakshmi@gmail.com",  address:"9, Porur, Chennai - 600116"},
+  {id:9,  name:"Mr. Sunil Nair",     child:"Rohit Nair",     mobile:"+91 90001 10009", lang:"English", email:"sunil@gmail.com",    address:"34, Perungudi, Chennai - 600096"},
+  {id:10, name:"Mrs. Hema Patel",    child:"Sneha Patel",    mobile:"+91 90001 10010", lang:"English", email:"hema@gmail.com",     address:"67, Sholinganallur, Chennai - 600119"},
+];
+
+const updatedRecords = [];
+
+// Shared notification stores
+let teacherAnnouncements = []; // from admin
+let parentNotifications = [];  // from admin + teacher
+let teacherFeedback = [];      // from parent
+let teacherLeaveRequests = [];  // from parent
+
+// Credentials (no hints shown)
+const creds = {
+  admin:   {user:"admin",   pass:"admin123"},
+  teacher: {user:"teacher", pass:"teach123"},
+  parent:  {user:"parent",  pass:"parent123"},
+};
+
+let currentRole = 'admin';
+let currentLang = 'EN';
+
+// ========== TAMIL TRANSLATIONS ==========
+const translations = {
+  EN: {
+    overview: 'Overview', notifications: 'Notifications', feedback: 'Feedback', applyLeave: 'Apply Leave',
+    attendance: '📊 Attendance', totalMarks: '📝 Total Marks', behaviour: '😊 Behaviour',
+    improvingDesc: 'Performance is good compared to last month',
+    stableDesc: 'Stable but needs regular monitoring',
+    attentionDesc: 'Continuous decline detected',
+    currentStatus: 'Current Status: ', statusMsg: "Your child's performance has improved by 8% compared to last month. Keep it up!",
+    behaviourClass: '😊 Behaviour in Class', punctuality: 'Punctuality', participation: 'Participation',
+    homework: 'Homework', discipline: 'Discipline',
+    skillDev: '🌟 Skill Development Log', skillsAdded: '📈 3 new skills added this month',
+    schoolNotif: '🔔 School Notifications',
+    pushMsg: '📱 Push notifications are enabled for your mobile.',
+    parentVoice: '💬 Parent Voice — Monthly Feedback',
+    feedbackDesc: 'Share your concerns or feedback to help us improve',
+    selectIssue: 'Select Issue', yourMsg: 'Your Message', submitFeedback: '📨 Submit Feedback',
+    fbSuccess: '✅ Feedback submitted successfully! We\'ll get back to you soon.',
+    applyLeaveTitle: '📝 Apply for Leave',
+    leaveDesc: "Inform the school about your child's absence",
+    fromDate: 'From Date', toDate: 'To Date', reason: 'Reason', additionalNote: 'Additional Note',
+    submitLeave: '📤 Submit Leave Request',
+    leaveSuccess: '✅ Leave request submitted successfully! School will confirm soon.',
+    leaveHistory: '📋 Leave History', noLeave: 'No leave requests submitted yet.',
+    'My Child\'s Overview': "My Child's Overview",
+  },
+  TA: {
+    overview: 'மேலோட்டம்', notifications: 'அறிவிப்புகள்', feedback: 'கருத்து', applyLeave: 'விடுப்பு விண்ணப்பிக்க',
+    attendance: '📊 வருகை', totalMarks: '📝 மொத்த மதிப்பெண்கள்', behaviour: '😊 நடத்தை',
+    improvingDesc: 'கடந்த மாதத்துடன் ஒப்பிடும்போது செயல்திறன் நன்றாக உள்ளது',
+    stableDesc: 'நிலையானது, ஆனால் தொடர்ந்து கண்காணிக்க வேண்டும்',
+    attentionDesc: 'தொடர்ச்சியான வீழ்ச்சி கண்டறியப்பட்டது',
+    currentStatus: 'தற்போதைய நிலை: ', statusMsg: 'உங்கள் குழந்தையின் செயல்திறன் கடந்த மாதத்தை விட 8% மேம்பட்டுள்ளது. தொடரட்டும்!',
+    behaviourClass: '😊 வகுப்பில் நடத்தை', punctuality: 'நேர்மை', participation: 'பங்கேற்பு',
+    homework: 'வீட்டுப்பாடம்', discipline: 'ஒழுக்கம்',
+    skillDev: '🌟 திறன் வளர்ச்சி பதிவு', skillsAdded: '📈 இந்த மாதம் 3 புதிய திறன்கள் சேர்க்கப்பட்டன',
+    schoolNotif: '🔔 பள்ளி அறிவிப்புகள்',
+    pushMsg: '📱 உங்கள் மொபைலில் அறிவிப்புகள் இயக்கப்பட்டுள்ளன.',
+    parentVoice: '💬 பெற்றோர் குரல் — மாதாந்திர கருத்து',
+    feedbackDesc: 'மேம்பட உதவ உங்கள் கவலைகளை அல்லது கருத்துகளை பகிர்ந்துகொள்ளுங்கள்',
+    selectIssue: 'பிரச்சனை தேர்ந்தெடு', yourMsg: 'உங்கள் செய்தி', submitFeedback: '📨 கருத்து சமர்ப்பி',
+    fbSuccess: '✅ கருத்து வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது! விரைவில் தொடர்பு கொள்கிறோம்.',
+    applyLeaveTitle: '📝 விடுப்பு விண்ணப்பிக்க',
+    leaveDesc: 'உங்கள் குழந்தையின் இல்லாமை பற்றி பள்ளியை அறிவியுங்கள்',
+    fromDate: 'தொடக்க தேதி', toDate: 'முடிவு தேதி', reason: 'காரணம்', additionalNote: 'கூடுதல் குறிப்பு',
+    submitLeave: '📤 விடுப்பு விண்ணப்பம் சமர்ப்பி',
+    leaveSuccess: '✅ விடுப்பு விண்ணப்பம் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது! பள்ளி உறுதிப்படுத்தும்.',
+    leaveHistory: '📋 விடுப்பு வரலாறு', noLeave: 'இன்னும் விடுப்பு விண்ணப்பங்கள் சமர்ப்பிக்கப்படவில்லை.',
+    'My Child\'s Overview': 'என் குழந்தையின் மேலோட்டம்',
+  }
+};
+
+// ========== DASHBOARD TOGGLE ==========
+function toggleDashList(showId, hide1, hide2) {
+  const el = document.getElementById(showId);
+  const isVisible = el.style.display !== 'none';
+  document.getElementById(hide1).style.display = 'none';
+  document.getElementById(hide2).style.display = 'none';
+  el.style.display = isVisible ? 'none' : 'block';
+  if (!isVisible) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ========== NAVIGATION ==========
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goLogin(role) {
+  currentRole = role;
+  document.getElementById('login-role-label').textContent = role.charAt(0).toUpperCase()+role.slice(1);
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  showPage('login-page');
+}
+
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value.trim();
+  const c = creds[currentRole];
+  if(u === c.user && p === c.pass) {
+    if(currentRole === 'admin') { renderAdmin(); showPage('admin-page'); }
+    else if(currentRole === 'teacher') { renderTeacherPortal(); updateTeacherBadges(); showPage('teacher-page'); }
+    else { renderParentPortal(); renderParentNotifications(); showPage('parent-page'); }
+  } else {
+    showToast('❌ Invalid credentials!');
+  }
+}
+
+function logout() {
+  showPage('home-page');
+}
+
+// ========== ADMIN ==========
+function adminNav(section, el) {
+  document.querySelectorAll('#admin-page .sub-page').forEach(s => s.classList.remove('active'));
+  document.getElementById('admin-'+section)?.classList.add('active');
+  document.getElementById('admin-title').textContent = {
+    dashboard:'Dashboard', students:'Students', teachers:'Teachers',
+    parents:'Parents', 'add-student':'Add Student', 'add-teacher':'Add Teacher',
+    'add-parent':'Add Parent', announcement:'Announcement'
+  }[section] || section;
+  if(el) {
+    document.querySelectorAll('#admin-page .nav-item').forEach(n=>n.classList.remove('active'));
+    el.classList.add('active');
+  }
+}
+
+function renderAdmin() {
+  renderDashStudents();
+  renderDashTeachers();
+  renderDashParents();
+  renderAdminStudents();
+  renderAdminTeachers();
+  renderAdminParents();
+  document.querySelector('#admin-page .stat-card.blue .stat-num').textContent = students.length;
+  document.querySelector('#admin-page .stat-card.cyan .stat-num').textContent = teachers.length;
+  document.querySelector('#admin-page .stat-card.amber .stat-num').textContent = parents.length;
+  document.getElementById('count-students').textContent = students.length;
+  document.getElementById('count-teachers').textContent = teachers.length;
+  document.getElementById('count-parents').textContent = parents.length;
+}
+
+function renderDashStudents() {
+  document.getElementById('dash-student-body').innerHTML = students.map((s,i) => `<tr>
+    <td>${i+1}</td><td><strong>${s.name}</strong></td><td>${s.roll}</td><td>${s.cls}</td>
+    <td><button class="btn-view" onclick="viewStudent(${s.id})">View Details</button></td>
+  </tr>`).join('');
+}
+function renderDashTeachers() {
+  document.getElementById('dash-teacher-body').innerHTML = teachers.map((t,i) => `<tr>
+    <td>${i+1}</td><td><strong>${t.name}</strong></td><td>${t.subject}</td>
+    <td><button class="btn-view" onclick="viewTeacher(${t.id})">View Details</button></td>
+  </tr>`).join('');
+}
+function renderDashParents() {
+  document.getElementById('dash-parent-body').innerHTML = parents.map((p,i) => `<tr>
+    <td>${i+1}</td><td><strong>${p.name}</strong></td><td>${p.child}</td>
+    <td><button class="btn-view" onclick="viewParent(${p.id})">View More</button></td>
+  </tr>`).join('');
+}
+function renderAdminStudents() {
+  document.getElementById('admin-student-body').innerHTML = students.map(s => `<tr>
+    <td><strong>${s.roll}</strong></td><td>${s.name}</td><td>${s.cls}</td>
+    <td><span class="badge-status ${s.att>=90?'badge-present':s.att>=80?'badge-warn':'badge-good'}">${s.att}%</span></td>
+    <td><button class="btn-view" onclick="viewStudent(${s.id})">View Details</button></td>
+  </tr>`).join('');
+}
+function renderAdminTeachers() {
+  document.getElementById('admin-teacher-body').innerHTML = teachers.map((t,i) => `<tr>
+    <td>${i+1}</td><td><strong>${t.name}</strong></td><td>${t.subject}</td><td>${t.email}</td>
+    <td><button class="btn-view" onclick="viewTeacher(${t.id})">View Details</button></td>
+  </tr>`).join('');
+}
+function renderAdminParents() {
+  document.getElementById('admin-parent-body').innerHTML = parents.map((p,i) => `<tr>
+    <td>${i+1}</td><td><strong>${p.name}</strong></td><td>${p.child}</td><td>${p.mobile}</td>
+    <td><button class="btn-view" onclick="viewParent(${p.id})">View More</button></td>
+  </tr>`).join('');
+}
+
+// ========== VIEW MODALS ==========
+function viewStudent(id) {
+  const s = students.find(x=>x.id===id);
+  if(!s) return;
+  document.getElementById('student-modal-content').innerHTML = `
+    <div class="detail-row"><div class="detail-label">Name</div><div class="detail-value">${s.name}</div></div>
+    <div class="detail-row"><div class="detail-label">Roll No</div><div class="detail-value">${s.roll}</div></div>
+    <div class="detail-row"><div class="detail-label">Class</div><div class="detail-value">${s.cls}</div></div>
+    <div class="detail-row"><div class="detail-label">Attendance</div><div class="detail-value">${s.att}%</div></div>
+    <div class="detail-row"><div class="detail-label">Marks</div><div class="detail-value">${s.marks}/${s.maxMarks}</div></div>
+    <div class="detail-row"><div class="detail-label">Behaviour</div><div class="detail-value">${s.beh}</div></div>
+    <div class="detail-row"><div class="detail-label">Skills</div><div class="detail-value">${s.skills}</div></div>
+    <div class="detail-row"><div class="detail-label">Parent</div><div class="detail-value">${s.parent}</div></div>
+  `;
+  openModal('student-modal');
+}
+function viewTeacher(id) {
+  const t = teachers.find(x=>x.id===id);
+  if(!t) return;
+  document.getElementById('teacher-modal-content').innerHTML = `
+    <div class="detail-row"><div class="detail-label">Name</div><div class="detail-value">${t.name}</div></div>
+    <div class="detail-row"><div class="detail-label">Subject</div><div class="detail-value">${t.subject}</div></div>
+    <div class="detail-row"><div class="detail-label">Email</div><div class="detail-value">${t.email}</div></div>
+    <div class="detail-row"><div class="detail-label">Mobile No</div><div class="detail-value">${t.mobile}</div></div>
+  `;
+  openModal('teacher-modal');
+}
+function viewParent(id) {
+  const p = parents.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('parent-modal-content').innerHTML = `
+    <div class="detail-row"><div class="detail-label">Name</div><div class="detail-value">${p.name}</div></div>
+    <div class="detail-row"><div class="detail-label">Mobile</div><div class="detail-value">${p.mobile}</div></div>
+    <div class="detail-row"><div class="detail-label">Language</div><div class="detail-value">${p.lang}</div></div>
+    <div class="detail-row"><div class="detail-label">Son/Daughter</div><div class="detail-value">${p.child}</div></div>
+    <div class="detail-row"><div class="detail-label">Email</div><div class="detail-value">${p.email}</div></div>
+    <div class="detail-row"><div class="detail-label">Address</div><div class="detail-value">${p.address}</div></div>
+  `;
+  openModal('parent-modal');
+}
+
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if(e.target===o) o.classList.remove('active'); });
+});
+
+// ========== ADD RECORDS ==========
+function addStudent() {
+  const name = document.getElementById('as-name').value.trim();
+  if(!name) { showToast('Please enter student name'); return; }
+  const newId = students.length ? Math.max(...students.map(s=>s.id))+1 : 1;
+  const student = {
+    id: newId, name, roll: document.getElementById('as-roll').value || 'R0'+newId,
+    cls: document.getElementById('as-class').value || '10-A',
+    att: parseInt(document.getElementById('as-att').value)||80,
+    marks: parseInt(document.getElementById('as-marks').value)||400,
+    maxMarks:500, beh: document.getElementById('as-beh').value,
+    skills: document.getElementById('as-skills').value || '-',
+    parent: document.getElementById('as-parent').value || '-',
+    gender: document.getElementById('as-gender').value==='Male'?'M':'F'
+  };
+  students.push(student);
+  renderAdmin(); renderTeacherPortal();
+  showToast('✅ Student added successfully! Reflected in both Admin & Teacher portal.');
+  ['as-name','as-roll','as-class','as-att','as-marks','as-skills','as-parent'].forEach(id=>document.getElementById(id).value='');
+}
+
+function addTeacher() {
+  const name = document.getElementById('at-name').value.trim();
+  if(!name) { showToast('Please enter teacher name'); return; }
+  teachers.push({
+    id: teachers.length+1, name, subject:document.getElementById('at-sub').value||'General',
+    email:document.getElementById('at-email').value||'-',
+    mobile:document.getElementById('at-mobile').value||'-'
+  });
+  renderAdmin();
+  showToast('✅ Teacher added successfully!');
+  ['at-name','at-sub','at-email','at-mobile'].forEach(id=>document.getElementById(id).value='');
+}
+
+function addParent() {
+  const name = document.getElementById('ap-name').value.trim();
+  if(!name) { showToast('Please enter parent name'); return; }
+  parents.push({
+    id: parents.length+1, name, mobile:document.getElementById('ap-mobile').value||'-',
+    email:document.getElementById('ap-email').value||'-',
+    lang:document.getElementById('ap-lang').value,
+    child:document.getElementById('ap-child').value||'-',
+    address:document.getElementById('ap-addr').value||'-'
+  });
+  renderAdmin();
+  showToast('✅ Parent added successfully!');
+  ['ap-name','ap-mobile','ap-email','ap-child','ap-addr'].forEach(id=>document.getElementById(id).value='');
+}
+
+// ========== ANNOUNCEMENT ==========
+function sendAnnouncement() {
+  const s = document.getElementById('ann-sub').value.trim();
+  const m = document.getElementById('ann-msg').value.trim();
+  const target = document.getElementById('ann-target').value;
+  if(!s||!m) { showToast('Please fill subject and message'); return; }
+
+  const ann = {
+    id: Date.now(), subject: s, message: m, target,
+    from: 'Admin', time: new Date().toLocaleString(),
+    isNew: true
+  };
+
+  // Send to teacher if target includes teachers
+  if(target === 'teachers' || target === 'all') {
+    teacherAnnouncements.unshift(ann);
+    updateTeacherBadges();
+  }
+
+  // Send to parent notifications if target includes parents
+  if(target === 'parents' || target === 'all') {
+    parentNotifications.unshift({
+      ...ann, from: '🛡️ Admin', icon: '📢', bgClass: 'notif-blue'
+    });
+    renderParentNotifications();
+  }
+
+  renderAdminAnnouncements();
+  document.getElementById('ann-sent').style.display='block';
+  setTimeout(()=>document.getElementById('ann-sent').style.display='none', 4000);
+  document.getElementById('ann-sub').value='';
+  document.getElementById('ann-msg').value='';
+  showToast('📢 Announcement sent!');
+}
+
+function renderAdminAnnouncements() {
+  const allAnn = [...teacherAnnouncements].filter(a=>a.target==='teachers'||a.target==='all');
+  const parentAnn = parentNotifications.filter(n=>n.from==='🛡️ Admin');
+  const combined = [...teacherAnnouncements, ...parentNotifications.filter(n=>n.from==='🛡️ Admin')];
+  // Deduplicate by id
+  const seen = new Set();
+  const unique = combined.filter(a => { if(seen.has(a.id)) return false; seen.add(a.id); return true; });
+  const el = document.getElementById('admin-ann-list');
+  if(!unique.length) { el.innerHTML = '<div style="text-align:center;color:var(--text-light);padding:20px;">No announcements sent yet.</div>'; return; }
+  el.innerHTML = unique.map(a=>`
+    <div style="background:#F8FAFF;border-radius:12px;padding:16px;margin-bottom:12px;border-left:4px solid var(--primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <strong>${a.subject}</strong>
+        <span style="font-size:11px;background:#EEF2FF;padding:3px 8px;border-radius:6px;color:var(--primary);">
+          To: ${a.target==='teachers'?'Teachers':a.target==='parents'?'Parents':'Everyone'}
+        </span>
+      </div>
+      <div style="font-size:13px;color:var(--text-light);margin-top:4px;">${a.message}</div>
+      <div style="font-size:11px;color:#9CA3AF;margin-top:6px;">${a.time}</div>
+    </div>
+  `).join('');
+}
+
+// ========== TEACHER PORTAL ==========
+function teacherNav(section, el) {
+  document.querySelectorAll('#teacher-page .sub-page').forEach(s=>s.classList.remove('active'));
+  document.getElementById(section).classList.add('active');
+  const titles = {
+    't-students':'Student List','t-add-student':'Add New Student','t-updates':'Updated Records',
+    't-announcements':'Announcements from Admin','t-parent-announce':'Message to Parents',
+    't-feedback':'Parent Feedback','t-leaves':'Leave Requests'
+  };
+  document.getElementById('teacher-title').textContent = titles[section] || section;
+  if(el) {
+    document.querySelectorAll('#teacher-page .nav-item').forEach(n=>n.classList.remove('active'));
+    el.classList.add('active');
+  }
+  // Mark as read when opened
+  if(section==='t-announcements') {
+    teacherAnnouncements.forEach(a=>a.isNew=false);
+    updateTeacherBadges();
+    renderTeacherAnnouncements();
+  }
+  if(section==='t-updates') renderUpdates();
+  if(section==='t-feedback') {
+    teacherFeedback.forEach(f=>f.isNew=false);
+    updateTeacherBadges();
+    renderTeacherFeedback();
+  }
+  if(section==='t-leaves') {
+    teacherLeaveRequests.forEach(l=>l.isNew=false);
+    updateTeacherBadges();
+    renderTeacherLeaves();
+  }
+}
+
+function updateTeacherBadges() {
+  const newAnn = teacherAnnouncements.filter(a=>a.isNew).length;
+  const newFb = teacherFeedback.filter(f=>f.isNew).length;
+  const newLv = teacherLeaveRequests.filter(l=>l.isNew).length;
+  const annBadge = document.getElementById('t-ann-badge');
+  const fbBadge = document.getElementById('t-fb-badge');
+  const lvBadge = document.getElementById('t-lv-badge');
+  annBadge.style.display = newAnn ? 'inline' : 'none'; annBadge.textContent = newAnn;
+  fbBadge.style.display = newFb ? 'inline' : 'none'; fbBadge.textContent = newFb;
+  lvBadge.style.display = newLv ? 'inline' : 'none'; lvBadge.textContent = newLv;
+}
+
+function renderTeacherPortal() {
+  const b = document.getElementById('teacher-student-body');
+  b.innerHTML = students.map(s => `<tr id="trow-${s.id}">
+    <td><strong>${s.name}</strong></td>
+    <td>${s.cls}</td>
+    <td><input class="input-edit" type="number" id="edit-att-${s.id}" value="${s.att}" min="0" max="100" style="width:70px;"></td>
+    <td><input class="input-edit" type="number" id="edit-marks-${s.id}" value="${s.marks}" min="0" max="500" style="width:70px;"></td>
+    <td><select class="select-edit" id="edit-beh-${s.id}">
+      <option ${s.beh==='Excellent'?'selected':''}>Excellent</option>
+      <option ${s.beh==='Good'?'selected':''}>Good</option>
+      <option ${s.beh==='Average'?'selected':''}>Average</option>
+      <option ${s.beh==='Needs Improvement'?'selected':''}>Needs Improvement</option>
+    </select></td>
+    <td><input class="input-edit" type="text" id="edit-skills-${s.id}" value="${s.skills}" style="width:120px;"></td>
+    <td><button class="btn-update" onclick="updateStudent(${s.id})">✏️ Update</button></td>
+  </tr>`).join('');
+}
+
+function updateStudent(id) {
+  const s = students.find(x=>x.id===id);
+  if(!s) return;
+  s.att = parseInt(document.getElementById('edit-att-'+id).value)||s.att;
+  s.marks = parseInt(document.getElementById('edit-marks-'+id).value)||s.marks;
+  s.beh = document.getElementById('edit-beh-'+id).value;
+  s.skills = document.getElementById('edit-skills-'+id).value;
+  updatedRecords.unshift({...s, updatedAt: new Date().toLocaleTimeString()});
+  const row = document.getElementById('trow-'+id);
+  row.classList.add('update-row');
+  setTimeout(()=>row.classList.remove('update-row'), 2000);
+  renderAdmin();   // sync to admin portal
+  renderParentPortal(); // sync to parent portal
+  showToast('✅ Student record updated! Synced to Admin & Parent portal.');
+}
+
+function renderUpdates() {
+  const b = document.getElementById('updated-body');
+  document.getElementById('no-updates').style.display = updatedRecords.length?'none':'block';
+  b.innerHTML = updatedRecords.map(s=>`<tr class="update-row">
+    <td><strong>${s.name}</strong></td><td>${s.cls}</td><td>${s.att}%</td>
+    <td>${s.marks}/${s.maxMarks}</td><td>${s.beh}</td><td>${s.skills}</td>
+    <td style="font-size:11px;color:#10B981;">${s.updatedAt}</td>
+  </tr>`).join('');
+}
+
+function teacherAddStudent() {
+  const name = document.getElementById('tas-name').value.trim();
+  if(!name) { showToast('Please enter student name'); return; }
+  const newId = students.length ? Math.max(...students.map(s=>s.id))+1 : 1;
+  students.push({
+    id:newId, name,
+    roll: document.getElementById('tas-roll').value||'R0'+newId,
+    cls: document.getElementById('tas-class').value||'10-A',
+    att: parseInt(document.getElementById('tas-att').value)||80,
+    marks: parseInt(document.getElementById('tas-marks').value)||400,
+    maxMarks:500, beh: document.getElementById('tas-beh').value,
+    skills: document.getElementById('tas-skills').value||'-',
+    parent: document.getElementById('tas-parent').value||'-',
+    gender: document.getElementById('tas-gender').value==='Male'?'M':'F'
+  });
+  renderTeacherPortal();
+  renderAdmin(); // Sync to admin portal
+  showToast('✅ Student added! Reflected in both Teacher & Admin portal.');
+  ['tas-name','tas-roll','tas-class','tas-att','tas-marks','tas-skills','tas-parent'].forEach(id=>document.getElementById(id).value='');
+}
+
+function renderTeacherAnnouncements() {
+  const el = document.getElementById('teacher-ann-list');
+  if(!teacherAnnouncements.length) {
+    el.innerHTML = '<div style="text-align:center;color:var(--text-light);padding:20px;">No announcements yet.</div>';
+    return;
+  }
+  el.innerHTML = teacherAnnouncements.map(a=>`
+    <div class="notification-item ${a.isNew?'notif-new':''}">
+      <div class="notif-icon notif-blue">📢</div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <strong>${a.subject}</strong>
+          ${a.isNew?'<span class="notif-new-badge">NEW</span>':''}
+        </div>
+        <div style="font-size:13px;margin-top:4px;">${a.message}</div>
+        <div style="font-size:11px;color:#9CA3AF;margin-top:4px;">${a.from} · ${a.time}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function sendTeacherMsgToParent() {
+  const sub = document.getElementById('tp-sub').value.trim();
+  const msg = document.getElementById('tp-msg').value.trim();
+  if(!sub||!msg) { showToast('Please fill subject and message'); return; }
+  const notif = {
+    id: Date.now(), subject: sub, message: msg,
+    from: '👨‍🏫 Teacher', icon: '📣', bgClass: 'notif-blue',
+    time: new Date().toLocaleString(), isNew: true
+  };
+  parentNotifications.unshift(notif);
+  renderParentNotifications();
+  renderTeacherSentMsgs();
+
+  document.getElementById('tp-sent').style.display='block';
+  setTimeout(()=>document.getElementById('tp-sent').style.display='none', 4000);
+  document.getElementById('tp-sub').value='';
+  document.getElementById('tp-msg').value='';
+  showToast('📣 Message sent to parents!');
+}
+
+function renderTeacherSentMsgs() {
+  const sentMsgs = parentNotifications.filter(n=>n.from==='👨‍🏫 Teacher');
+  const el = document.getElementById('teacher-sent-msgs');
+  if(!sentMsgs.length) { el.innerHTML = '<div style="text-align:center;color:var(--text-light);padding:20px;">No messages sent yet.</div>'; return; }
+  el.innerHTML = sentMsgs.map(m=>`
+    <div style="background:#F8FAFF;border-radius:12px;padding:14px;margin-bottom:10px;border-left:4px solid var(--secondary);">
+      <strong>${m.subject}</strong>
+      <div style="font-size:13px;color:var(--text-light);margin-top:4px;">${m.message}</div>
+      <div style="font-size:11px;color:#9CA3AF;margin-top:6px;">${m.time}</div>
+    </div>
+  `).join('');
+}
+
+function renderTeacherFeedback() {
+  const el = document.getElementById('teacher-feedback-list');
+  if(!teacherFeedback.length) {
+    el.innerHTML = '<div style="text-align:center;color:var(--text-light);padding:20px;">No feedback received yet.</div>';
+    return;
+  }
+  el.innerHTML = teacherFeedback.map(f=>`
+    <div class="feedback-inbox-item">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="font-size:20px;">👤</span>
+        <div>
+          <strong>${f.parentName}</strong> 
+          <span style="color:var(--text-light);font-size:12px;">parent of</span>
+          <strong>${f.childName}</strong>
+          ${f.isNew?'<span class="notif-new-badge" style="background:#F59E0B;">NEW</span>':''}
+        </div>
+      </div>
+      <div style="font-size:12px;background:#EEF2FF;border-radius:8px;padding:6px 10px;display:inline-block;margin-bottom:6px;color:var(--primary);font-weight:600;">${f.issue}</div>
+      <div style="font-size:13px;">${f.message}</div>
+      <div style="font-size:11px;color:#9CA3AF;margin-top:6px;">${f.time}</div>
+    </div>
+  `).join('');
+}
+
+function renderTeacherLeaves() {
+  const el = document.getElementById('teacher-leave-list');
+  if(!teacherLeaveRequests.length) {
+    el.innerHTML = '<div style="text-align:center;color:var(--text-light);padding:20px;">No leave requests yet.</div>';
+    return;
+  }
+  el.innerHTML = teacherLeaveRequests.map(l=>`
+    <div class="leave-inbox-item">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:20px;">👤</span>
+          <div>
+            <strong>${l.parentName}</strong>
+            <span style="color:var(--text-light);font-size:12px;">for</span>
+            <strong>${l.childName}</strong>
+            ${l.isNew?'<span class="notif-new-badge" style="background:#F59E0B;">NEW</span>':''}
+          </div>
+        </div>
+        <span style="font-size:11px;background:#FEF3C7;border-radius:6px;padding:3px 8px;color:#D97706;font-weight:600;">${l.reason}</span>
+      </div>
+      <div style="font-size:13px;color:#92400E;">📅 ${l.from} → ${l.to}</div>
+      ${l.note?`<div style="font-size:12px;color:var(--text-light);margin-top:4px;">Note: ${l.note}</div>`:''}
+      <div style="font-size:11px;color:#9CA3AF;margin-top:6px;">${l.time}</div>
+    </div>
+  `).join('');
+}
+
+// ========== PARENT PORTAL ==========
+function renderParentPortal() {
+  const s = students[0];
+  document.getElementById('p-avatar').textContent = s.name.charAt(0);
+  document.getElementById('p-student-name').textContent = s.name;
+  document.getElementById('p-student-details').textContent = 'Class '+s.cls+' · Roll No: '+s.roll;
+  document.getElementById('p-parent-name').textContent = 'Parent: Mr. '+s.parent;
+  document.getElementById('p-att').textContent = s.att+'%';
+  document.getElementById('p-marks').textContent = s.marks+'/'+s.maxMarks;
+  document.getElementById('p-beh').textContent = s.beh;
+}
+
+function renderParentNotifications() {
+  const el = document.getElementById('parent-notif-list');
+  // Update badge
+  const newCount = parentNotifications.filter(n=>n.isNew).length;
+  const badge = document.getElementById('p-notif-badge');
+  badge.style.display = newCount?'inline':'none';
+  badge.textContent = newCount;
+
+  if(!parentNotifications.length) {
+    el.innerHTML = `
+      <div class="notification-item"><div class="notif-icon notif-blue">📝</div><div><strong>Mathematics Test</strong><br><span style="font-size:12px;color:var(--text-light);">Scheduled on March 5 — Chapter 5 & 6</span></div></div>
+      <div class="notification-item"><div class="notif-icon notif-amber">📋</div><div><strong>Science Assignment Due</strong><br><span style="font-size:12px;color:var(--text-light);">Submit by March 3 — Topics: Photosynthesis</span></div></div>
+      <div class="notification-item"><div class="notif-icon" style="background:#FEF2F2;">📅</div><div><strong>PTA Meeting</strong><br><span style="font-size:12px;color:var(--text-light);">March 10 at 10:00 AM — School Hall</span></div></div>
+      <div class="notification-item"><div class="notif-icon notif-blue">📖</div><div><strong>Half-Yearly Exams</strong><br><span style="font-size:12px;color:var(--text-light);">Starting March 20 — Timetable attached</span></div></div>
+    `;
+    return;
+  }
+  el.innerHTML = parentNotifications.map(n=>`
+    <div class="notification-item ${n.isNew?'notif-new':''}">
+      <div class="notif-icon ${n.bgClass||'notif-blue'}">${n.icon||'📢'}</div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <strong>${n.subject}</strong>
+          ${n.isNew?'<span class="notif-new-badge">NEW</span>':''}
+        </div>
+        <div style="font-size:13px;margin-top:2px;">${n.message}</div>
+        <div style="font-size:11px;color:#9CA3AF;margin-top:4px;">${n.from} · ${n.time}</div>
+      </div>
+    </div>
+  `).join('') + `
+    <div class="notification-item"><div class="notif-icon notif-blue">📝</div><div><strong>Mathematics Test</strong><br><span style="font-size:12px;color:var(--text-light);">Scheduled on March 5 — Chapter 5 & 6</span></div></div>
+    <div class="notification-item"><div class="notif-icon notif-amber">📋</div><div><strong>Science Assignment Due</strong><br><span style="font-size:12px;color:var(--text-light);">Submit by March 3 — Topics: Photosynthesis</span></div></div>
+  `;
+}
+
+function parentNav(section, el) {
+  document.querySelectorAll('#parent-page .sub-page').forEach(s=>s.classList.remove('active'));
+  document.getElementById(section).classList.add('active');
+  const t = translations[currentLang];
+  const titles = {
+    'p-overview': t['My Child\'s Overview'] || "My Child's Overview",
+    'p-notifications': t.schoolNotif || 'Notifications',
+    'p-feedback': t.parentVoice || 'Monthly Feedback',
+    'p-leave': t.applyLeaveTitle || 'Apply Leave'
+  };
+  document.getElementById('parent-title').textContent = titles[section]||section;
+  if(el) {
+    document.querySelectorAll('#parent-page .nav-item').forEach(n=>n.classList.remove('active'));
+    el.classList.add('active');
+  }
+  if(section==='p-notifications') {
+    parentNotifications.forEach(n=>n.isNew=false);
+    renderParentNotifications();
+  }
+}
+
+function submitFeedback() {
+  const issue = document.getElementById('fb-issue').value;
+  const msg = document.getElementById('fb-msg').value.trim();
+  if(!issue||!msg) { showToast('Please select issue and write message'); return; }
+  // Get current parent info (parent 1 = Rajesh Kumar, child = Arun Kumar)
+  const parentName = 'Mr. Rajesh Kumar';
+  const childName = 'Arun Kumar';
+  teacherFeedback.unshift({
+    parentName, childName, issue, message: msg,
+    time: new Date().toLocaleString(), isNew: true
+  });
+  updateTeacherBadges();
+  document.getElementById('fb-success').style.display='block';
+  document.getElementById('fb-issue').value='';
+  document.getElementById('fb-msg').value='';
+  setTimeout(()=>document.getElementById('fb-success').style.display='none',4000);
+  showToast('✅ Feedback sent to teacher!');
+}
+
+function applyLeave() {
+  const from = document.getElementById('lv-from').value;
+  const to = document.getElementById('lv-to').value;
+  const reason = document.getElementById('lv-reason').value;
+  const note = document.getElementById('lv-note').value.trim();
+  if(!from||!to) { showToast('Please select leave dates'); return; }
+  const leaveReq = {
+    parentName: 'Mr. Rajesh Kumar', childName: 'Arun Kumar',
+    from, to, reason, note, time: new Date().toLocaleString(), isNew: true
+  };
+  teacherLeaveRequests.unshift(leaveReq);
+  updateTeacherBadges();
+
+  // Show in parent leave history
+  renderParentLeaveHistory();
+  document.getElementById('leave-success').style.display='block';
+  setTimeout(()=>document.getElementById('leave-success').style.display='none',4000);
+  showToast('📤 Leave request sent to teacher!');
+}
+
+function renderParentLeaveHistory() {
+  const el = document.getElementById('parent-leave-history');
+  const myLeaves = teacherLeaveRequests.filter(l=>l.childName==='Arun Kumar');
+  if(!myLeaves.length) { el.innerHTML='<div style="text-align:center;color:var(--text-light);padding:12px;">No leave requests submitted yet.</div>'; return; }
+  el.innerHTML = myLeaves.map(l=>`
+    <div style="background:#FEF3C7;border-radius:12px;padding:14px;margin-bottom:10px;border-left:4px solid #F59E0B;">
+      <div style="display:flex;justify-content:space-between;">
+        <strong>${l.reason}</strong>
+        <span style="font-size:11px;background:#FEF3C7;color:#D97706;padding:2px 8px;border-radius:6px;">Pending</span>
+      </div>
+      <div style="font-size:13px;color:#92400E;margin-top:4px;">📅 ${l.from} → ${l.to}</div>
+      <div style="font-size:11px;color:#9CA3AF;margin-top:4px;">${l.time}</div>
+    </div>
+  `).join('');
+}
+
+// ========== LANGUAGE TOGGLE ==========
+function setLang(lang, btn) {
+  currentLang = lang;
+  document.querySelectorAll('#parent-page .lang-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const t = translations[lang];
+  if(!t) return;
+
+  // Translate all data-key elements inside parent portal
+  document.querySelectorAll('#parent-page [data-key]').forEach(el => {
+    const key = el.getAttribute('data-key');
+    if(t[key]) el.textContent = t[key];
+  });
+
+  // Update sidebar nav items
+  document.querySelectorAll('#parent-page .nav-item span[data-key]').forEach(el => {
+    const key = el.getAttribute('data-key');
+    if(t[key]) el.textContent = t[key];
+  });
+
+  // Update page title
+  const activeSection = document.querySelector('#parent-page .sub-page.active');
+  if(activeSection) {
+    const sectionId = activeSection.id;
+    const titles = {
+      'p-overview': t['My Child\'s Overview'] || "My Child's Overview",
+      'p-notifications': t.schoolNotif || 'Notifications',
+      'p-feedback': t.parentVoice || 'Monthly Feedback',
+      'p-leave': t.applyLeaveTitle || 'Apply Leave'
+    };
+    if(titles[sectionId]) document.getElementById('parent-title').textContent = titles[sectionId];
+  }
+
+  showToast(lang==='EN'?'🇬🇧 Switched to English':'🇮🇳 தமிழுக்கு மாறியது');
+}
+
+// ========== TOAST ==========
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.style.display='none', 3000);
+}
+
+// Init
+renderAdmin();
+</script>
+</body>
+</html>
