@@ -1,0 +1,23 @@
+package com.parentlyx.service;
+
+import com.parentlyx.model.User;
+import com.parentlyx.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
+
+    public User login(String username, String password) {
+        return userRepository.findByUsername(username)
+                .filter(u -> u.getPassword().equals(password))
+                .orElse(null);
+    }
+}
